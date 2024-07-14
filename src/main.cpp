@@ -10,7 +10,7 @@
 #else
 #endif
 
-#define CRSF_USER_BAUDRATE           115200
+#define CRSF_USER_BAUDRATE           115200 //for arduino compability, arduino use softserial, ensure than your elrs cofigured (default 420k)
 
 
 
@@ -68,7 +68,7 @@ void loop() {
 
     crsf.update();
     if(crsf.isLinkUp()){
-      static int frq = checkChannel(crsf.getChannel(SPY_CHANNEL));
+      static int frq = 0;
       
       if (frq != checkChannel(crsf.getChannel(SPY_CHANNEL))){
         frq = checkChannel(crsf.getChannel(SPY_CHANNEL));
