@@ -3,10 +3,37 @@
 #include <AlfredoCRSF.h>
 
 /// config
+#if platform == 1
+    #define PLATFORM_STM 
+#elif platform == 2
+    #define PLATFORM_AVR
+#else
+#endif
+
+#define CRSF_USER_BAUDRATE           115200
+
+
+
+#ifdef PLATFORM_STM
 const int CS_PIN = PB7; // Define your CS pin
 const int LED_PIN = PC13; // Built-in LED pin on Blue Pill
 const int DATA_PIN = PA7; // Built-in LED pin on Blue Pill
 const int SCK_PIN = PA5; // Built-in LED pin on Blue Pill
+
+const int ELRS_RX = PA3; 
+const int ELRS_TX = PA2; 
+#endif
+
+#ifdef PLATFORM_AVR
+#include <SoftwareSerial.h>
+const int CS_PIN = PB7; // Define your CS pin
+const int LED_PIN = 11; // Built-in LED pin on Blue Pill
+const int DATA_PIN = 12; // Built-in LED pin on Blue Pill
+const int SCK_PIN = 13; // Built-in LED pin on Blue Pill
+
+const int ELRS_RX = A0; 
+const int ELRS_TX = A1; 
+#endif
 
 const int SPY_CHANNEL = 6; // Number of channel wich swich Vrx
 
@@ -22,13 +49,18 @@ void printChannels();
 int checkChannel(int input);
 
 AlfredoCRSF crsf;
-HardwareSerial crsfSerial(PA3, PA2); // RX, TX
+#ifdef PLATFORM_STM
+HardwareSerial crsfSerial(ELRS_RX, ELRS_TX); // RX, TX
+#endif
+#ifdef PLATFORM_AVR
+SoftwareSerial crsfSerial(ELRS_RX, ELRS_TX); // RX, TX
+#endif
 RichWave rx5808(DATA_PIN,CS_PIN,SCK_PIN);
 
 void setup() {
   // Initialize Serial for logging
   Serial.begin(115200);
-  crsfSerial.begin(CRSF_BAUDRATE); 
+  crsfSerial.begin(CRSF_USER_BAUDRATE); 
   crsf.begin(crsfSerial);
 }
 
